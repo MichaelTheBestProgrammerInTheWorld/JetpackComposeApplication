@@ -22,7 +22,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,54 +40,37 @@ import com.michaelmagdy.jetpackcomposeapplication.ui.theme.JetpackComposeApplica
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val fontFamily = FontFamily(
+            Font(R.font.open_sans_condensed_bold, FontWeight.Bold),
+            Font(R.font.open_sans_condensed_light, FontWeight.Light),
+            Font(R.font.open_sans_condensed_light_italic, FontWeight.ExtraLight)
+        )
         setContent {
-            val painter = painterResource(id = R.drawable.kermit)
-            val description = "kermit the frog plays in the snow and wears a muffler"
-            val title = "kermit in the snow"
-
-            Box(modifier = Modifier
-                .fillMaxWidth(0.5f)
-                .padding(16.dp)) {
-
-                ImageCard(painter = painter, contentDescription = description, title = title)
-            }
-        }
-    }
-}
-
-@Composable
-fun ImageCard(
-    painter: Painter,
-    contentDescription: String,
-    title: String,
-    modifier: Modifier = Modifier
-){
-    Card (modifier = modifier.fillMaxWidth(),
-          shape = RoundedCornerShape(16.dp),
-    elevation = 4.dp){
-
-        Box(modifier = Modifier.height(200.dp)) {
-            
-            Image(painter = painter, contentDescription = contentDescription,
-                  contentScale = ContentScale.Crop)
-            
-            //for gradient
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(colors = listOf(Color.Transparent, Color.Black),
-                                           startY = 300f)
-                )) {
-
-            }
-            
-            //for text
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .padding(12.dp),
-            contentAlignment = Alignment.BottomStart) {
-
-                Text(text = title, style = TextStyle(color = Color.White, fontSize = 16.sp))
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0xff101010))
+            ) {
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                color = Color.LightGray,
+                                fontSize = 50.sp
+                            )
+                        ) {
+                            append("Jetpack ")
+                        }
+                        append("Compose")
+                    },
+                    color = Color.White,
+                    fontSize = 30.sp,
+                    fontFamily = fontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontStyle = FontStyle.Italic,
+                    textAlign = TextAlign.Center,
+                    textDecoration = TextDecoration.Underline
+                )
             }
         }
     }
