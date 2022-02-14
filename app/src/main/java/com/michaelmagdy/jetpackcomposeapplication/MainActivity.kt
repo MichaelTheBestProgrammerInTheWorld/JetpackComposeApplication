@@ -15,6 +15,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -36,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.michaelmagdy.jetpackcomposeapplication.ui.theme.JetpackComposeApplicationTheme
+import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,33 +49,49 @@ class MainActivity : ComponentActivity() {
             Font(R.font.open_sans_condensed_light_italic, FontWeight.ExtraLight)
         )
         setContent {
-            Box(
-                modifier = Modifier
+            Column(Modifier.fillMaxSize()) {
+
+                val color = remember {
+                    mutableStateOf(Color.Yellow)
+                }
+
+                ColorBox(
+                    Modifier
+                        .weight(1f)
+                        .fillMaxSize()
+                ){
+                    color.value = it
+                }
+
+                Box(modifier = Modifier.weight(1f)
                     .fillMaxSize()
-                    .background(Color(0xff101010))
-            ) {
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(
-                            style = SpanStyle(
-                                color = Color.LightGray,
-                                fontSize = 50.sp
-                            )
-                        ) {
-                            append("Jetpack ")
-                        }
-                        append("Compose")
-                    },
-                    color = Color.White,
-                    fontSize = 30.sp,
-                    fontFamily = fontFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontStyle = FontStyle.Italic,
-                    textAlign = TextAlign.Center,
-                    textDecoration = TextDecoration.Underline
-                )
+                    .background(color.value)) {
+
+                }
             }
         }
+    }
+
+
+
+    @Composable
+    fun ColorBox(modifier: Modifier = Modifier,
+                 updateColor: (Color) -> Unit){
+
+
+
+        Box(modifier = modifier
+            .background(Color.Red)
+            .clickable {
+                updateColor(
+                    Color(
+                        Random.nextFloat(),
+                        Random.nextFloat(),
+                        Random.nextFloat(),
+                        1f
+                    )
+                )
+            })
     }
 }
 
