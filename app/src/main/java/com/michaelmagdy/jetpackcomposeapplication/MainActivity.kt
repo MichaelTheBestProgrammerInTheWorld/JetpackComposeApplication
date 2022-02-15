@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
@@ -46,35 +48,39 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
 
-            val constraints = ConstraintSet {
-                val greenBox = createRefFor("greenBox")
-                val redBox = createRefFor("redBox")
+           var sizeState by remember {
+               mutableStateOf(200.dp)
+           }
+            val size by animateDpAsState(targetValue = sizeState,
+//                spring(
+//                    Spring.DampingRatioHighBouncy
+//                ),
+            tween(
+                durationMillis = 3000,
+                delayMillis = 300,
+                easing = LinearOutSlowInEasing
+            )
+            )
 
-                constrain(greenBox){
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start)
-                    width = Dimension.value(100.dp)
-                    height = Dimension.value(100.dp)
+            val infiniteTransition = rememberInfiniteTransition()
+            val color by infiniteTransition.animateColor(
+                initialValue = Color.Red,
+                targetValue = Color.Green,
+                animationSpec = infiniteRepeatable(
+                    tween(
+                        durationMillis = 2000
+                    ),
+                    repeatMode = RepeatMode.Reverse
+                )
+            )
+
+            Box(modifier = Modifier
+                .background(color)
+                .size(size),
+            contentAlignment = Alignment.Center){
+                Button(onClick = { sizeState += 50.dp }) {
+                    Text(text = "Increase Size")
                 }
-
-                constrain(redBox){
-                    top.linkTo(parent.top)
-                    start.linkTo(greenBox.end)
-                    end.linkTo(parent.end)
-                    width = Dimension.value(100.dp)
-                    height = Dimension.value(100.dp)
-                }
-
-                //createHorizontalChain(greenBox, redBox)
-            }
-
-            ConstraintLayout(constraints, modifier = Modifier.fillMaxSize()) {
-
-                Box(modifier = Modifier.background(Color.Green)
-                    .layoutId("greenBox"))
-
-                Box(modifier = Modifier.background(Color.Red)
-                    .layoutId("redBox"))
             }
         }
     }
